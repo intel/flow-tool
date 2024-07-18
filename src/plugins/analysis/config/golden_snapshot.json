@@ -1,0 +1,30 @@
+{
+    "meta":{
+        "id": "pkg-generic",
+        "name": "pkg-generic",
+        "version": "1.0.0",
+        "desc": "generic package for MTL"
+    },
+    "applicability": {
+        "OS": "ubuntu",
+        "distro": ["24.04"] ,
+        "kernel" : "6.8",
+	"storage": "6G",
+        "platform": ["MTL"] 
+    },
+
+    "software": {
+        "dpkglist": [
+             {"name":"intel-driver-compiler-npu", "version": ""},
+             {"name":"intel-fw-npu", "version": ""} ,
+             {"name":"intel-level-zero-npu", "version": ""},
+             {"name":"level-zero", "version": ""}
+
+        ] ,
+        "localInstall": [
+             {"name":"openvino-plugin","version":"2023.1", "path":"/opt/intel/openvino"},
+             {"name":"gimp","version":"2.10", "path":"$USER/gimp"}
+        ]
+    }
+}
+

@@ -1,0 +1,112 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "meta": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "desc": {
+          "type": "string"
+        },
+        "build": {
+          "type": "object",
+          "properties": {
+            "date": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "date"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "version",
+        "desc",
+        "build"
+      ]
+    },
+    "applicability": {
+      "type": "object",
+      "properties": {
+        "OS": {
+          "type": "string"
+        },
+        "distro": {
+          "type": "array",
+          "items": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "required": [
+        "OS",
+        "distro"
+      ]
+    },
+    "preact": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "desc": {
+              "type": "string"
+            },
+            "action": {
+              "type": "string"
+            },
+            "param": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "desc"
+          ]
+        }
+      ]
+    },
+    "act": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "action": {
+              "type": "string"
+            },
+            "param": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "action",
+            "param"
+          ]
+        }
+
+      ]
+    }
+  },
+  "required": [
+    "meta",
+    "applicability",
+    "act"
+  ]
+}

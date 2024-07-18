@@ -1,0 +1,7 @@
+bundle/
+out/
+out.*
+*.deb
+*.rpm
+*.zip
+*.tar

@@ -1,0 +1,30 @@
+{
+    "$id": "kit/schema/plugin/discovery/info-response",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "disovery plugin info response json values",
+    "description": "get linux packaging discovery plugin information",
+	"type": "object",
+	"properties": {
+		"description": {
+		  "type": "string"
+		},
+		"name": {
+		  "type": "string",
+		  "description": "name of the framework or micro service"
+		},
+		"os": {
+		  "type": "string",
+		  "description": "framework or micro service version. format: Major number.Minor number.builddateYYMMDD"
+		},
+		"version": {
+		  "type": "string"
+		}
+	},
+	"required": [
+	"description",
+	"name",
+	"os",
+	"version"
+	]	
+}
+

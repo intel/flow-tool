@@ -1,0 +1,209 @@
+{
+  "$id": "kit/schema/plugin/discovery/collect-response",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "disovery plugin collect response json values",
+  "description": "discovery plugin collect response information",
+  "type": "object",
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "build": {
+          "type": "object",
+          "properties": {
+            "date": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "date"
+          ]
+        },
+        "desc": {
+          "type": "string"
+        },
+        "identifier": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "schema": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "build",
+        "desc",
+        "identifier",
+        "name",
+        "schema",
+        "version"
+      ]
+    },
+    "platform info": {
+      "type": "object",
+      "properties": {
+        "audio": {
+          "type": "object",
+          "properties": {
+            "PD": {
+              "type": "string"
+            },
+            "timer": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "PD",
+            "timer"
+          ]
+        },
+        "firmware": {
+          "type": "object",
+          "properties": {
+            "PD": {
+              "type": "string"
+            },
+            "timer": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "PD",
+            "timer"
+          ]
+        },
+        "hardware": {
+          "type": "object",
+          "properties": {
+            "": {
+              "type": "string"
+            }
+          },
+          "required": [
+            ""
+          ]
+        },
+        "ifwi": {
+          "type": "object",
+          "properties": {
+            "ifwi": {
+              "type": "string"
+            },
+            "timer": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "ifwi",
+            "timer"
+          ]
+        },
+        "kernel": {
+          "type": "object",
+          "properties": {
+            "version": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "version"
+          ]
+        },
+        "network": {
+          "type": "object",
+          "properties": {
+            "ethernet": {
+              "type": "string"
+            },
+            "wifi": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "ethernet",
+            "wifi"
+          ]
+        },
+        "os": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "version": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "name",
+            "version"
+          ]
+        },
+        "software": {
+          "type": "object",
+          "properties": {
+            "dpkglist": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "version": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "version"
+                ]
+              }
+            },
+            "snaplist": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "version": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "version"
+                ]
+              }
+            }
+          },
+          "required": [
+            "dpkglist",
+            "snaplist"
+          ]
+        }
+      },
+      "required": [
+        "audio",
+        "firmware",
+        "hardware",
+        "ifwi",
+        "kernel",
+        "network",
+        "os",
+        "software"
+      ]
+    }
+  },
+  "required": [
+    "metadata",
+    "platform info"
+  ]
+}
