@@ -24,11 +24,6 @@ echo $BASEDIR
 TARGETFOLDER_PATH="$BASEDIR/out"
 mkdir -p $TARGETFOLDER_PATH  
 
-#add license
-
-#add user guide
-#cp $BASEDIR/../docs/userGuide.txt $TARGETFOLDER_PATH/
-
 echo "setting up development environment ..."
 SETUPSCRIPT=$BASEDIR/../devSetup/
 pushd $SETUPSCRIPT #fix otherwise it messes with basedir in other script.
@@ -67,8 +62,8 @@ for BUILDSCRIPT_PATH in "${ARRAY_BUILDSCRIPT_PATHS[@]}"; do
     
     #framework: copy tool binary
     if [[ $BUILDSCRIPT_PATH == *"framework"* ]]; then
-        cp -r $BUILDOUT_PATH/lean* $TARGETFOLDER_PATH
-        chmod +x $TARGETFOLDER_PATH/lean*
+        cp -r $BUILDOUT_PATH/flow-tool* $TARGETFOLDER_PATH
+        chmod +x $TARGETFOLDER_PATH/flow-tool*
     fi
 
     #plugin: copy lib

@@ -25,9 +25,9 @@ licensors in any way."
  
 #pragma once
 
-#define MICRO_SERVICE_VERSION "1.5.0.240709"
+#define MICRO_SERVICE_VERSION "1.5.0.240718"
 #define MICRO_SERVICE_NAME "discovery"
 #define OS "Linux"
 #define DESC "The plugin that discovers/collects platform information"
 #define FRAMEWORK "1.0.0 >"
-#define BUILDDATE "240709"
+#define BUILDDATE "240718"

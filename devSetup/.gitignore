@@ -1,4 +1,3 @@
-build/
 json-schema-validator/
-out/
-out.*
+*.zip
+*.tar
