@@ -92,6 +92,25 @@ std::string CSysInfo::removeSpace(std::string& input)
 }
 
 /*
+ * extractString: parse the snapshot strings
+ * @param: input string
+ * @return: string
+ */
+std::string CSysInfo::extractString(std::string& input)
+{
+    size_t index = input.find('.');
+
+    if (index != std::string::npos) {
+        size_t second = input.find('.', index + 1);
+        if (second != std::string::npos) {
+           input.erase(second ); 
+        }
+    }
+
+    return input;
+}
+
+/*
  * getAvailableStorage: return the available storage
  * @param: total space
  * @return: bool
@@ -152,16 +171,31 @@ bool CSysInfo::getAvailableStorage(std::string& diskspace)
  {
 
    try {
-         if(pltinfo.kversion < version) {
-          //  std::cout << "kernel mismatched#### " << version << std::endl;
+        int majorPlt, minorPlt = 0;
+        int majorVer, minorVer =0;
+        char delimit;
+       
+       //parse before the delimit
+        std::stringstream ss(pltinfo.kversion);
+        ss >> majorPlt >> delimit >> minorPlt;
+
+        //get the value after the delimit
+        std::stringstream ssVer(version);
+        ssVer >> majorVer>> delimit >> minorVer ;
+
+         if(majorPlt < majorVer) {
             return false;
          }
+         if(minorPlt >= minorVer ) {
+             return true;
+          }
+
       } 
     catch (const std::exception& e) {
 	        std::cout << "precheck:getKernelVersion failed "   << std::endl;
            return false;
    }
-   return true; 
+   return false; 
  } 
  
  /*
@@ -239,7 +273,9 @@ bool CSysInfo::getSysInfo(const sysinfoData& sysdata ) {
         systemInfos.readSnapfile(osInfo);
         if(sysdata.pkgsets == "gimp") { 
           
-          if(!systemInfos.getKernelVersion(sysdata.kversion ))
+          bool value = systemInfos.getKernelVersion(sysdata.kversion );
+
+          if(!value )
           {
             std::cout << "kernel mismatched# " << sysdata.kversion << std::endl;
             return false;
