@@ -57,6 +57,8 @@ bool CSysInfo::readSnapfile(sysinfoData& osInfo)
                available = platform_info["storage"]["available"]; 
                pltName = platform_info["hardware"]["platform"]; 
 
+               pltinfo.kversion = extractString(pltinfo.kversion);
+
                osVersion = platform_info["os"]["version"]; 
                osVersion = removeSpace(osVersion);
                removeSpace(name);
@@ -89,6 +91,25 @@ std::string CSysInfo::removeSpace(std::string& input)
     size_t pos = input.find('.', input.find('.') + 1);
     std::string version = input.substr(0, pos);
     return version;
+}
+
+/*
+ * extractString: parse the snapshot strings
+ * @param: input string
+ * @return: string
+ */
+std::string CSysInfo::extractString(std::string& input)
+{
+    size_t index = input.find('.');
+
+    if (index != std::string::npos) {
+        size_t second = input.find('.', index + 1);
+        if (second != std::string::npos) {
+           input.erase(second ); 
+        }
+    }
+
+    return input;
 }
 
 /*
@@ -152,16 +173,31 @@ bool CSysInfo::getAvailableStorage(std::string& diskspace)
  {
 
    try {
-         if(pltinfo.kversion < version) {
-          //  std::cout << "kernel mismatched#### " << version << std::endl;
+        int majorPlt, minorPlt = 0;
+        int majorVer, minorVer =0;
+        char delimit;
+       
+       //parse before the delimit
+        std::stringstream ss(pltinfo.kversion);
+        ss >> majorPlt >> delimit >> minorPlt;
+
+        //get the value after the .
+        std::stringstream ssVer(version);
+        ssVer >> majorVer>> delimit >> minorVer ;
+
+         if(majorPlt < majorVer) {
             return false;
          }
+         if(minorPlt >= minorVer ) {
+             return true;
+          }
+
       } 
     catch (const std::exception& e) {
 	        std::cout << "precheck:getKernelVersion failed "   << std::endl;
            return false;
    }
-   return true; 
+   return false; 
  } 
  
  /*
