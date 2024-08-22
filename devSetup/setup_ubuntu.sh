@@ -21,7 +21,7 @@ BASEDIR="$( cd "$( dirname "$0" )" && pwd )"
 echo "BASEDIR = $BASEDIR"
 
 #cmake
-sudo apt-get install -y cmake build-essential
+sudo apt-get install -y git cmake build-essential
 
 #build framework
 #sudo apt-get install -y libcap-dev libssl-dev
