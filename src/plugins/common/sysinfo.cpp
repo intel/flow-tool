@@ -171,8 +171,8 @@ bool CSysInfo::getAvailableStorage(std::string& diskspace)
  {
 
    try {
-        int majorPlt, minorPlt = 0;
-        int majorVer, minorVer =0;
+        int majorPlt = 0, minorPlt = 0;
+        int majorVer = 0, minorVer = 0;
         char delimit;
        
        //parse before the delimit
@@ -190,7 +190,7 @@ bool CSysInfo::getAvailableStorage(std::string& diskspace)
       } 
     catch (const std::exception& e) {
 	        std::cout << "precheck:getKernelVersion failed "   << std::endl;
-           return false;
+         
    }
    return false; 
  } 
