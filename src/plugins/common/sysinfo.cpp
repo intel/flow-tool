@@ -57,6 +57,8 @@ bool CSysInfo::readSnapfile(sysinfoData& osInfo)
                available = platform_info["storage"]["available"]; 
                pltName = platform_info["hardware"]["platform"]; 
 
+               trimKernelString(pltinfo.kversion);
+
                osVersion = platform_info["os"]["version"]; 
                osVersion = removeSpace(osVersion);
                removeSpace(name);
@@ -89,6 +91,23 @@ std::string CSysInfo::removeSpace(std::string& input)
     size_t pos = input.find('.', input.find('.') + 1);
     std::string version = input.substr(0, pos);
     return version;
+}
+
+/*
+ * trimKernelString: parse the kernel strings
+ * @param: input string
+ */
+void CSysInfo::trimKernelString(std::string& input)
+{
+    size_t index = input.find('.');
+
+    if (index != std::string::npos) {
+        size_t second = input.find('.', index + 1);
+        if (second != std::string::npos) {
+           input.erase(second ); 
+        }
+    }
+
 }
 
 /*
@@ -152,16 +171,28 @@ bool CSysInfo::getAvailableStorage(std::string& diskspace)
  {
 
    try {
-         if(pltinfo.kversion < version) {
-          //  std::cout << "kernel mismatched#### " << version << std::endl;
-            return false;
+        int majorPlt, minorPlt = 0;
+        int majorVer, minorVer =0;
+        char delimit;
+       
+       //parse before the delimit
+        std::stringstream ss(pltinfo.kversion);
+        ss >> majorPlt >> delimit >> minorPlt;
+
+        //get the value after the delimit
+        std::stringstream ssVer(version);
+        ssVer >> majorVer>> delimit >> minorVer ;
+
+         if((majorPlt >= majorVer) && (minorPlt >= minorVer)) {
+            return true;
          }
+
       } 
     catch (const std::exception& e) {
 	        std::cout << "precheck:getKernelVersion failed "   << std::endl;
            return false;
    }
-   return true; 
+   return false; 
  } 
  
  /*
@@ -239,7 +270,9 @@ bool CSysInfo::getSysInfo(const sysinfoData& sysdata ) {
         systemInfos.readSnapfile(osInfo);
         if(sysdata.pkgsets == "gimp") { 
           
-          if(!systemInfos.getKernelVersion(sysdata.kversion ))
+          bool value = systemInfos.getKernelVersion(sysdata.kversion );
+
+          if(!value )
           {
             std::cout << "kernel mismatched# " << sysdata.kversion << std::endl;
             return false;
