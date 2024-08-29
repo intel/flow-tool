@@ -50,6 +50,7 @@ private:
     //bool getHWInfo(std::vector<std::string> platHW);
     bool readSnapfile(sysinfoData& osInfo);
     std::string removeSpace(std::string& input);
+    void trimKernelString(std::string& input);
 
 public:    
 
