@@ -258,20 +258,22 @@ std::string CAPIHandlers::collect(bool bNameOnly) {
     return "";
 }
 
-std::string CAPIHandlers::getPltName(std::string sResult) {             
-   std::istringstream f(sResult);
+std::string CAPIHandlers::getPltName(std::string sResult) {     
    std::string sVersion("Unknown"); 
-    std::string s;    
-    while (getline(f, s, ' ')) {
-        //std::cout << s << std::endl;
+   std::string s; 
+   std::size_t pos = sResult.find("Ultra");
 
-        if (s.find("Ultra") != std::string::npos){
-          
-            sVersion = "MTL";
-            break; 
+   if (pos != std::string::npos) {
+        //get the last index of the space
+        std::size_t index = sResult.find_last_of(" ");
+        if (index != std::string::npos && index + 1 < sResult.size()) {
+            // read the value after the last space
+            s = sResult.substr(index + 1);
+            // check if the value is 1 or 2
+            sVersion = s[0];
         }
-        
-     }   
+    }
+
   return sVersion;      
 }
 
