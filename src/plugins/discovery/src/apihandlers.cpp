@@ -270,7 +270,9 @@ std::string CAPIHandlers::getPltName(std::string sResult) {
             // read the value after the last space
             s = sResult.substr(index + 1);
             // check if the value is 1 or 2
+
             sVersion = s[0];
+
         }
     }
 
