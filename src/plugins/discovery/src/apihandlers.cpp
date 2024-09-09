@@ -258,20 +258,26 @@ std::string CAPIHandlers::collect(bool bNameOnly) {
     return "";
 }
 
+/**
+ * @brief Retrieves the platform name from the given result string.
+ * @param sResult The result string .
+ * @return The platform name extracted from the result string, or "Unknown" if not found.
+ */
 std::string CAPIHandlers::getPltName(std::string sResult) {             
    std::istringstream f(sResult);
    std::string sVersion("Unknown"); 
-    std::string s;    
-    while (getline(f, s, ' ')) {
-        //std::cout << s << std::endl;
+   std::string s;
+   std::size_t pos = sResult.find("Ultra");
 
-        if (s.find("Ultra") != std::string::npos){
-          
-            sVersion = "MTL";
-            break; 
-        }
+    if (pos != std::string::npos) {
         
-     }   
+        std::size_t index = sResult.find_last_of(" ");
+        if (index != std::string::npos && index + 1 < sResult.size()) {
+            s = sResult.substr(index + 1);
+            sVersion= s[0];
+        }
+    }
+     
   return sVersion;      
 }
 
