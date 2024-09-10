@@ -204,6 +204,7 @@ std::string CAPIHandlers::collect(bool bNameOnly) {
                              json itemsList =  property["items"];
                           if (checkLocalInstalls(itemsList)) {
                               output["platform info"][itemName][newkey] = property["items"] ;
+                              
                             }
                         }
                     } else {
@@ -222,6 +223,7 @@ std::string CAPIHandlers::collect(bool bNameOnly) {
                 if (itemName == "localInstall"){
                     if (checkLocalInstalls(itemArray)) {
                         output["platform info"]["software"][itemName] = itemArray; 
+                        
                     } else {
                         output["platform info"]["software"][itemName] = {}; 
                     }
@@ -283,34 +285,35 @@ std::string CAPIHandlers::getPltName(std::string sResult) {
 
 bool CAPIHandlers::checkLocalInstalls(nlohmann::json& input) {             
 
-  std::string Fname = input["gimp"];
-  std::string Sname = input["openvino-plugin"];
+  std::string Pname = input["name"];
   char* userName = nullptr;
   bool result = false;
 
-  std::istringstream iss(Fname);
-  std::string line, path;
-  
-  while (std::getline(iss, line, '/')){
-   
-       if (line == "$USER")
-          userName = getenv("USER");
-       else 
-          path = line; 
-          
-  }     
-  if(userName != nullptr )
+  if( Pname.find("openvino") != std::string::npos)
   {
-     std::string directory = "/home/" + std::string(userName) + "/"+ path;
+    std::size_t index = Pname.find_last_of("/");  
+    if (index != std::string::npos) {
+        std::string name = Pname.substr(index + 1);  
+        input[name] = name;
+        input.erase("name");
+        result = true;
+   }
+    userName = getenv("USER");
+    
+    if(userName != nullptr )
+    {
+     std::string directory = "/home/" + std::string(userName) + "/"+ "gimp";
      if (checkDirExist(directory)) {
-         if (checkDirExist(Sname)) {
-          //todo: clean up the list return true for now 
-          result = true;
-        
+         std::size_t index = directory.find_last_of("/"); 
+         if (index != std::string::npos) {
+            std::string name = directory.substr(index + 1);  
+            input[name] = name;
+         }
+         result = true;
        } 
     } 
   }
- 
+
   return result;      
 }
 

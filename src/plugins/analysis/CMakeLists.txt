@@ -20,14 +20,12 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 # create the config directory to copy  temp files
-set(CONFIG_DEST_DIR "${CMAKE_BINARY_DIR}/config")
+#set(CONFIG_DEST_DIR "${CMAKE_BINARY_DIR}/config")
 set(CONFIG_SCHEMA_DIR "${CMAKE_BINARY_DIR}/config/schema")
 #set the files path
-set(FILE_CONFIG "${CMAKE_SOURCE_DIR}/config/golden_snapshot.json")
 set(FILE_CONFIG_SCH "${CMAKE_SOURCE_DIR}/schema/analysis.manifest.schema_v1.json")
 
-file(MAKE_DIRECTORY "${CONFIG_DEST_DIR}")
-configure_file("${FILE_CONFIG}" "${CONFIG_DEST_DIR}/golden_snapshot.json" COPYONLY)
+file(MAKE_DIRECTORY "${CONFIG_SCHEMA_DIR}")
 configure_file("${FILE_CONFIG_SCH}" "${CONFIG_SCHEMA_DIR}/analysis.manifest.schema_v1.json" COPYONLY)
 
 # find and load external project dependencies

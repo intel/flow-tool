@@ -268,8 +268,9 @@ bool CSysInfo::getSysInfo(const sysinfoData& sysdata ) {
 
     try {
         systemInfos.readSnapfile(osInfo);
-        if(sysdata.pkgsets == "gimp") { 
-          
+        
+        if(sysdata.packageName == sysdata.precheck_name) { 
+         
           bool value = systemInfos.getKernelVersion(sysdata.kversion );
 
           if(!value )
@@ -292,7 +293,7 @@ bool CSysInfo::getSysInfo(const sysinfoData& sysdata ) {
 
        }
 
-       if(!systemInfos.getDistroInfo(sysdata.distro,sysdata.distroVersion, sysdata.pkgsets ))
+       if(!systemInfos.getDistroInfo(sysdata.distro,sysdata.distroVersion, sysdata.precheck_name ))
        {
          std::cout <<"os version mismatched:"  <<std::endl; 
          return false;

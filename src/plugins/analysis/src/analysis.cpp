@@ -223,9 +223,9 @@ std::string CAnalysis::loadSnapfiles(const std::string& filename)
 
         //verify the platform snap shot was created
         std::filesystem::path PlatSnapFile = currentToolPath / "platform-snapshot.json";
-        std::string folderPath = "config/";
+        std::string folderPath = "pkg/";
         std::string file = "golden_snapshot.json";
-        
+
         if( !filename.empty())
         {
            RefSnapFile = currentToolPath / folderPath / filename;
