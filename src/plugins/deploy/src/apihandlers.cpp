@@ -497,11 +497,10 @@ int CAPIHandlers::kernelCheck(CManifestActData *pActItem, bool bPrepare){
     std::string sCommand = "grep -oP \"model name\\K.*\" /proc/cpuinfo | head -1";  
     //std::cout << "run kernelCheck command " << sCommand << std::endl;        
     std::string sResult = Helper::runCmd(sCommand, 0);
-    
+
     if (sResult.empty())
         return -1; 
 
-          
     //parse the string e.g. : Intel(R) Core(TM) i7-8559U CPU @ 2.70GHz
     std::istringstream f(sResult);
     std::string s;    
@@ -515,7 +514,7 @@ int CAPIHandlers::kernelCheck(CManifestActData *pActItem, bool bPrepare){
             resCode = 0;
             break; 
         }
-
+        
         size_t index = s.find('-'); 
         if (s.find('i') == 0 && index != std::string::npos){
             index++;
@@ -621,8 +620,8 @@ bool CAPIHandlers::getApplicablityData(std::string pkgname)
     sysData.kversion =  _pManifest->pPkgApplicabilityData->kernel;
     sysData.distroVersion = _pManifest->pPkgApplicabilityData->vDistros;
     sysData.platform = _pManifest->pPkgApplicabilityData->vPlatforms;
-    sysData.pkgsets = pkgname;
-    //sysData.hardware = _pManifest->pPkgApplicabilityData->vHW;
+    sysData.packageName =  _pManifest->pPkgApplicabilityData->packageName;
+    sysData.precheck_name = pkgname;
     bool retVal = CSysInfo::getSysInfo(sysData);
     return retVal;
 }
