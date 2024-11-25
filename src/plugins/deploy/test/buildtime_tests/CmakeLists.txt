@@ -1,0 +1,25 @@
+
+message (STATUS "inside buildtime_test_cmake")
+message (STATUS "CMAKE_SOURCE_DIR = ${CMAKE_SOURCE_DIR}")
+
+include_directories(
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ../../common/include/
+)
+
+# Define the unit test executable
+add_executable(graph_test test_graph.cpp ${CMAKE_SOURCE_DIR}../../common/graph.cpp)
+
+# Link CTest to the unit test executable
+add_test(NAME graph_test COMMAND graph_test)
+
+# Set required properties for tests
+set_tests_properties(graph_test PROPERTIES PASS_REGULAR_EXPRESSION "passed!")
+
+# Add custom command to run tests after build
+add_custom_command(
+    TARGET graph_test POST_BUILD
+    COMMENT "Running unit tests"
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure -C $<CONFIGURATION>
+)

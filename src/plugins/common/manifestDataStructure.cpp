@@ -20,6 +20,7 @@
 #include<fstream>
 #include "validator.h"
 #include "manifestDataStructure.h"
+#include "graph.h"
 
 CPkgManifest::CPkgManifest() {
     init();
@@ -228,8 +229,10 @@ int CManifestActData::setValues(nlohmann::json jTag) {
         if(jTag.contains("remote_path")) { remotePath = jTag.at("remote_path").get<std::string>(); }
         if(jTag.contains("reference")) { reference = jTag.at("reference").get<std::string>(); }
         if(jTag.contains("on_failure")) { onFailure = jTag.at("on_failure").get<std::string>(); }
-        if(jTag.contains("onsuccess")) { onSuccess = jTag.at("onsuccess").get<std::string>(); }
-        if(jTag.contains("expected")) { expected = jTag.at("expected").get<std::string>(); }    
+        if(jTag.contains("on_success")) { onSuccess = jTag.at("on_success").get<std::string>(); }
+        expected = "0";
+        if(jTag.contains("expected")) { expected = jTag.at("expected").get<std::string>(); }
+    
 	if(jTag.contains("condition")) { expected = jTag.at("condition").get<std::string>(); }    
     } catch (const std::exception &e) {
         std::cout << e.what() << "error set values" << std::endl;        
@@ -295,26 +298,16 @@ std::string CManifestReferData::tojsonString() {
  */
 void CPkgManifest::flattenActionPaths() {
     
-     std::unordered_map<std::string, std::shared_ptr<CActionGraphNode>> actions_dict;
-   
-    std::vector<CManifestActData*>::iterator act_it;
-    for(act_it = vPkgActData.begin(); act_it != vPkgActData.end(); act_it++) {
-        
-        CManifestActData *pData = (CManifestActData*)*act_it;
-     
-        std::shared_ptr<CActionGraphNode> curr_node = std::make_shared<CActionGraphNode>(pData);
+    cout << endl;
+    cout << "Graph Building ---- Printing All Nodes" << endl;
+    graph.printgraphnodes();
 
-        actions_dict[pData->action] = curr_node;
-        
-        std::shared_ptr<CActionGraphNode> other_node = nullptr;
+    cout << endl;
+    cout << "Graph Building ---- Printing All Paths" << endl;
 
-        if(other_node != curr_node && other_node != NULL) {
-           std::shared_ptr<CActionGraphEdge> edge = std::make_shared<CActionGraphEdge>(curr_node.get(), other_node.get(), "success");
-           
-            curr_node->addEdge(edge);
-        }
-    }
-
+    graph.buildingDAG();
+    graph.print_all_paths();
+    cout << endl;
 }
 
 
@@ -465,6 +458,7 @@ int CPkgManifest::readFromFile(std::string filepath) {
                 if(pPreActDataItem) {
                     pPreActDataItem->setValues(it_preactitem);
                     vPkgPreActData.push_back(pPreActDataItem);
+                    graph.insertNewNode(pPreActDataItem, convertManifestToNodeData(*pPreActDataItem));
                 }
                
             }
@@ -479,6 +473,7 @@ int CPkgManifest::readFromFile(std::string filepath) {
                 if(pActDataItem) {
                     pActDataItem->setValues(it_actitem);
                     vPkgActData.push_back(pActDataItem);
+                    graph.insertNewNode(pActDataItem, convertManifestToNodeData(*pActDataItem));
                 }
                
             }
@@ -493,12 +488,26 @@ int CPkgManifest::readFromFile(std::string filepath) {
                 if(pPostActDataItem) {
                     pPostActDataItem->setValues(it_postactitem);
                     vPkgPostActData.push_back(pPostActDataItem);
+                    graph.insertNewNode(pPostActDataItem, convertManifestToNodeData(*pPostActDataItem));
                 }
             }
         }
         
-        //std::cout << "post act tag done" << std::endl;
-        //std::cout << "manifest " << filepath << " parsing completed successfully" << std::endl;
+        /*custom tags parsing*/
+        for (const auto& [tag, nodes] : jsonManifestFileData.items())
+        {
+            if (tag != "meta" && tag != "applicability" && tag != "prop" && tag != "refer" && tag != "preact" && tag != "act" && tag != "postact") {
+                for (const auto& act : nodes) {
+                    if(!act.contains("action")) { continue; }
+                    CManifestActData *pFaiSucActDataItem = new CManifestActData();
+                    if (pFaiSucActDataItem) {
+                        pFaiSucActDataItem->setValues(act);
+                        vPkgFaiSucActData[tag].push_back(pFaiSucActDataItem);
+                        graph.insertNewNodeTags(pFaiSucActDataItem, tag, convertManifestToNodeData(*pFaiSucActDataItem));
+                    }
+                }
+            }
+        }
         
         /**flatten the path*/
         flattenActionPaths();
@@ -509,4 +518,13 @@ int CPkgManifest::readFromFile(std::string filepath) {
     }
     
     return 0;
+}
+
+NodeData* CPkgManifest::convertManifestToNodeData(const CManifestActData& manifestData) {
+    NodeData* nodeData = new NodeData();
+    nodeData->action = manifestData.action;
+    nodeData->param = manifestData.param;
+    nodeData->onfailure_tag = manifestData.onFailure;
+    nodeData->onsuccess_tag = manifestData.onSuccess;
+    return nodeData;
 }

@@ -135,6 +135,42 @@ int CAPIHandlers::coreHandler(std::string manifestPath, bool bPrepare, std::stri
         if(_pManifest) {
             _pManifest->readFromFile(manifestPath);
 
+            cout << endl;
+            cout << "########################## FOLLOWING A PATH ###############################" << endl;
+            cout << endl;
+            cout << endl;
+
+            SNode = _pManifest->graph.vNodes[0];
+            while (SNode != _pManifest->graph.endNode) {
+
+                int tempVariable = rValue(static_cast<CManifestActData*>(SNode->pDataRef), bPrepare);
+
+                Node* getNextNode = _pManifest->graph.receive_next_node(SNode, tempVariable);
+
+                SNode = getNextNode;
+
+                cout << "Next Node Param: " << SNode->data->param << endl;
+                cout << endl;
+            }
+            
+            //std::cout << "updating status " << std::endl;
+            
+            //CStatusInfo::getInstance()->setStatus(DEPLOY_STATUS, "{ \"status\": \"deploy\",\"desc\":\"manifest file loaded\" ,\"progress\":\"10\"}");
+            
+            //todo: clean up
+            /*if(pCmdDict && _pManifest->vPkgReferData.size() > 0) {
+                pCmdDict->updateDict(_pManifest->vPkgReferData);
+            }*/
+            //todo: print active dict to confirm.
+
+            //std::cout << "handle actions" << std::endl;
+            //preact
+
+            cout << endl;
+            cout << "########################## FOLLOWING SEQUENTIAL ORDER ###############################" << endl;
+            cout << endl;
+            cout << endl;
+
             //std::cout << "handle actions" << std::endl;
             //preact
             std::vector<CManifestActData*>::iterator pre_it;
@@ -384,6 +420,32 @@ bool CAPIHandlers::checkandStartAction(std::string strAction)
     return bFound;
 }
 
+// Return 0 if the expected value is the same as return value; otherwise 1
+int CAPIHandlers::rValue(CManifestActData *pActItem, bool bPrepare) {
+
+    if (pActItem->action.empty()) { 	
+		std::cout << "ERROR: No action specified" <<  std::endl;
+		return -1; 		
+	} else {
+		std::map<std::string, fPtr>::iterator it = map_string_fPtr.find(pActItem->action);
+		if (it != map_string_fPtr.end()) {
+			fPtr func_addr = it->second;
+			int returnVal = (this->*func_addr)(pActItem, bPrepare);
+
+			if (pActItem->expected != ""){
+			    if (pActItem->expected == std::to_string(returnVal)) {
+                    return 0;
+                } else {
+                    return 1;
+                }
+            }
+        } else {
+		    std::cout << "ERROR: Action not supported " << std::endl; 
+		    return -1; 
+		}
+        return 0;
+    }
+}
 
 /**
  * Handles a custom action specified in the manifest.
@@ -461,6 +523,9 @@ int CAPIHandlers::handleCustomAction(CManifestActData *pActItem, bool bPrepare){
  *         A return value of `0` indicates successful execution, while a non-zero value indicates failure.
  */
 int CAPIHandlers::executeScript(CManifestActData *pActItem, bool bPrepare) {
+
+    int retVal = 0;
+
     try {
         std::string sScriptPath = std::filesystem::path(sManifestParentPath) / pActItem->param;
        // std::string sScriptPath = std::filesystem::path(sPkgPath) / pActItem->param;
@@ -472,15 +537,15 @@ int CAPIHandlers::executeScript(CManifestActData *pActItem, bool bPrepare) {
             Helper::runCmd(terminal_command, 0);
         }
         
-        int retVal = system(sScriptPath.c_str());
-        std::cout << retVal << std::endl; 
+        retVal = system(sScriptPath.c_str());
+        // std::cout << WEXITSTATUS(retVal) << std::endl; 
         
     } catch (...) {
         
         std::cout << "Exception" << std::endl; 
     }
     
-    return 0;
+    return WEXITSTATUS(retVal);
 }
 
 /**

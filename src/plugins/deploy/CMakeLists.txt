@@ -12,6 +12,9 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# Set to ON to include build-time test binary
+option(RUN_BUILD_TIME_TESTS "Build test src and execute tests at compile time" ON)
+
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -88,7 +91,7 @@ find_package(nlohmann_json CONFIG REQUIRED)
 find_package(nlohmann_json_schema_validator REQUIRED)
 
 include_directories(
-	${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
     ../../common/include/
     src/include/
     ../common/include/
@@ -105,6 +108,7 @@ set(_srcs
   src/deploy.cpp
   src/commandreference.cpp
   src/apihandlers.cpp
+  ../common/graph.cpp
 )
 
 # Create the library
@@ -129,4 +133,11 @@ elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-overflow -fstack-protector-strong -fPIE -fPIC -z noexecstack ")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-delete-null-pointer-checks")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fwrapv")
+endif()
+
+if(RUN_BUILD_TIME_TESTS)
+    # Enable CTest
+    enable_testing()
+    
+    add_subdirectory(test/buildtime_tests)
 endif()
