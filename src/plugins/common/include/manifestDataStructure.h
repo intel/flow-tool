@@ -25,6 +25,8 @@
 #include <unordered_map>
 #include <nlohmann/json.hpp>
 
+#include "graph.h"
+
 //todo: support overwrite through config file.
 #define MANIFEST_SCHEMA_FILE "/usr/etc/kit/schema/manifest.schema.json"
 
@@ -108,7 +110,7 @@ public:
 };
 
 /** graph datastructure -- to define different paths of action */
-class CActionGraphNode;
+/*class CActionGraphNode;
 
 class CActionGraphEdge {
     
@@ -141,7 +143,7 @@ public:
         return edges; 
     }
 
-};
+};*/
 
 /** manifest data */
 class CPkgManifest {
@@ -155,12 +157,14 @@ private:
     void deinit();
     
     /** generates action graph to handle path diversions (on sucess, on failure handlers....)*/
-    int flattenActionPath();
+    //int flattenActionPath();
    // std::unordered_map<std::string, CActionGraphNode*> flattenActionPaths();
     void flattenActionPaths();
 public:
     CPkgManifest();
     ~CPkgManifest();
+
+    CGraph graph;
    
     CManifestMetaData *pPkgMetaData {0};
     CManifestPropData *pPkgPropData {0};
@@ -170,7 +174,9 @@ public:
     std::vector<CManifestActData*> vPkgPreActData;
     std::vector<CManifestActData*> vPkgActData;
     std::vector<CManifestActData*> vPkgPostActData;
+    std::map<std::string, std::vector<CManifestActData*>> vPkgFaiSucActData; //custom tags to jump from on_failure and on_success cases
     
     int WriteToFile(std::string filepath);
     int readFromFile(std::string filepath);
+    NodeData* convertManifestToNodeData(const CManifestActData& manifestData);
 };

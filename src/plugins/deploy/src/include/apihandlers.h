@@ -66,6 +66,10 @@ private:
     std::queue<std::string> qIncludedManifests;
     std::string sManifestParentPath;
     std::string sPkgPath;
+
+    // First Node of the graph (Root Node)
+    Node* SNode;
+    std::string succFailVar;
         
     int handleAction(CManifestActData *pActItem, bool bPrepare);
     int coreHandler(std::string manifestPath, bool bPrepare, std::string archivePath);
@@ -74,7 +78,10 @@ private:
     /*! function pointer */            
     typedef int(CAPIHandlers::*fPtr)(CManifestActData *pActItem, bool bPrepare);    
     /*! map of functional pointers and custom action string */            
-    std::map<std::string, fPtr> map_string_fPtr;     
+    std::map<std::string, fPtr> map_string_fPtr;
+
+    // Return 0 if the expected value is the same as return value; otherwise 1s
+    int rValue(CManifestActData *pActItem, bool bPrepare);     
     
     //handle custom action which is normally not a standard action defined by commands
     int handleCustomAction(CManifestActData *pActItem, bool bPreapre);
