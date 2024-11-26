@@ -76,8 +76,8 @@ json j = {
     })},
     
     {"localInstall", {          
-            {"openvino-plugin", "/opt/intel/openvino"},
-            {"gimp","$USER/gimp"} 
+            {"name", "/opt/intel/openvino"}
+    
         }
     },
        
