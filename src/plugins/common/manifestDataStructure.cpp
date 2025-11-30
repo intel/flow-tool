@@ -193,6 +193,7 @@ int CManifestApplicabilityData::setValues(nlohmann::json jTag) {
             vDistros.push_back(item);
         }
     }
+    if(jTag.contains("name")) { packageName= jTag.at("name").get<std::string>(); }
     /*if(jTag.contains("HW")) {
         auto items = jTag.at("HW").get<std::vector<std::string>>();
         for (auto item : items) {

@@ -61,7 +61,7 @@ public:
     std::vector<std::string> vDistros;
     std::string arch;
     std::string kernel;
-    //std::string hw;
+    std::string packageName;
     //std::vector<std::string> vHW;
 
     std::string tojsonString();

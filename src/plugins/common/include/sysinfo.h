@@ -28,8 +28,8 @@
     std::string distro;
     std::vector<std::string> distroVersion;
     std::vector<std::string> platform; //not used now
-    std::string pkgsets;
-    //std::vector<std::string> hardware;
+    std::string precheck_name;
+    std::string packageName;
  };
  
 
@@ -47,16 +47,12 @@ private:
     bool getKernelVersion(std::string version);
     bool getDistroInfo(std::string distroName,std::vector<std::string> osdistroversions,std::string pkgset );
     bool getPltInfo(std::vector<std::string> platversions);
-    //bool getHWInfo(std::vector<std::string> platHW);
     bool readSnapfile(sysinfoData& osInfo);
     std::string removeSpace(std::string& input);
     void trimKernelString(std::string& input);
 
 public:    
 
-
-  /** info struct initialize*/
-  //typedef sysinfoData systeminfoData ;
   
   /** get the info **/
   static bool getSysInfo(const sysinfoData& sysdata  );
